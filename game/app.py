@@ -4,8 +4,21 @@ This is a simple web app that plays a game of keep away against the user. Game s
 from random import randint
 from sanic import Sanic
 from sanic import response
+import zmq
 
 app = Sanic(__name__)
+
+# Set up and bind PUB socket
+@app.listener('before_server_start')
+def zmq_socket(app):
+    """
+    Given a sanic app object, initialises a ZMQ context object, creates
+    a PUB socket, binds it to port 5555, and attaches it to the app
+    """
+    context = zmq.Context()
+    socket = context.socket(zmq.PUB)
+    socket.bind("tcp://*:5555")
+    app.socket = socket
 
 # Host static files
 app.static('/static', '/static')
@@ -25,25 +38,24 @@ async def action_handler(request):
     """
     When a user posts game state, the server should respond with the action for the game AI to take.
     """
-    body = request.json
+    data = request.json
 
-
-    data = {
-        'direction': random_direction()
-    }
-    return response.json(data)
-
-def random_direction():
-    """
-    Generates and returns a random cardinal direction as a strings
-    """
+    # Determine action
     directions = {
         1: 'up',
         2: 'down',
         3: 'left',
         4: 'right',
     }
-    return directions[randint(1,4)]
+    direction = directions[randint(1,4)]
+
+    # Send state and action to pub stream
+    data['direction'] = direction
+    app.socket.send_json(data)
+
+    return response.json({
+        'direction': direction
+    })
 
 # REQUEST = {
 #     'hero': {
