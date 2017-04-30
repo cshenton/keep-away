@@ -1,0 +1,25 @@
+
+version: '3'
+services:
+
+  game:
+    build: game/
+    environment:
+      - INPUT_HOST=normaliser
+      - INPUT_PORT=5555
+    links:
+      - normaliser
+
+  learner:
+    build: learner/
+    environment:
+      - INPUT_HOST=simulator
+      - INPUT_PORT=5555
+      - OUTPUT_PORT=5555
+    links:
+      - simulator
+
+  inferer:
+    build: inferer/
+    environment:
+      - OUTPUT_PORT=5555
