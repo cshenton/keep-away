@@ -26,7 +26,7 @@ async def action_handler(request):
     When a user posts game state, the server should respond with the action for the game AI to take.
     """
     body = request.json
-    # Do some stuff
+
 
     data = {
         'direction': random_direction()

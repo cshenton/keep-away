@@ -89,48 +89,52 @@ var monster_action = function(hero_x, hero_y, mon_x, mon_y, caught) {
 
 // Update game objects
 var update = function (modifier) {
-    // Determine monster action
-    var direction = monster_action(hero.x, hero.y, monster.x, monster.y, false);
-    // var direction = 'up'
-
-    // Move Monster
-    switch(direction) {
-        case 'up':
-            monster.y = Math.max(monster.y - monster.speed * modifier, 0);
-            break;
-        case 'down':
-            monster.y = Math.min(monster.y + monster.speed * modifier, canvas.height - 32);
-            break;
-        case 'left':
-            monster.x = Math.max(monster.x - monster.speed * modifier, 0);
-            break;
-        case 'right':
-            monster.x = Math.min(monster.x + monster.speed * modifier, canvas.width - 32);
-    }
-
-    // Move Player
-    if (38 in keysDown) { // Player holding up
-        hero.y = Math.max(hero.y - hero.speed * modifier, 0);
-    }
-    else if (40 in keysDown) { // Player holding down
-        hero.y = Math.min(hero.y + hero.speed * modifier, canvas.height - 32);
-    }
-    else if (37 in keysDown) { // Player holding left
-        hero.x = Math.max(hero.x - hero.speed * modifier, 0);
-    }
-    else if (39 in keysDown) { // Player holding right
-        hero.x = Math.min(hero.x + hero.speed * modifier, canvas.width - 32);
-    }
-
-    // Determine if game is over
+    // If player has been caught
     if (
         hero.x <= (monster.x + 32)
         && monster.x <= (hero.x + 32)
         && hero.y <= (monster.y + 32)
         && monster.y <= (hero.y + 32)
     ) {
+        // Broadcast state and reward to back end
+        var direction = monster_action(hero.x, hero.y, monster.x, monster.y, true);
+        // Reset
         ++monstersCaught;
         reset();
+    }
+    // If player yet to be caught
+    else {
+        // Determine monster action
+        var direction = monster_action(hero.x, hero.y, monster.x, monster.y, false);
+
+        // Move Monster
+        switch(direction) {
+            case 'up':
+                monster.y = Math.max(monster.y - monster.speed * modifier, 0);
+                break;
+            case 'down':
+                monster.y = Math.min(monster.y + monster.speed * modifier, canvas.height - 32);
+                break;
+            case 'left':
+                monster.x = Math.max(monster.x - monster.speed * modifier, 0);
+                break;
+            case 'right':
+                monster.x = Math.min(monster.x + monster.speed * modifier, canvas.width - 32);
+        }
+
+        // Move Player
+        if (38 in keysDown) { // Player holding up
+            hero.y = Math.max(hero.y - hero.speed * modifier, 0);
+        }
+        else if (40 in keysDown) { // Player holding down
+            hero.y = Math.min(hero.y + hero.speed * modifier, canvas.height - 32);
+        }
+        else if (37 in keysDown) { // Player holding left
+            hero.x = Math.max(hero.x - hero.speed * modifier, 0);
+        }
+        else if (39 in keysDown) { // Player holding right
+            hero.x = Math.min(hero.x + hero.speed * modifier, canvas.width - 32);
+        }
     }
 };
 
