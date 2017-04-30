@@ -64,9 +64,17 @@ var reset = function () {
     monster.y = 32 + (Math.random() * (canvas.height - 64));
 };
 
+// Query the backend action API
+var action = function(x_pos, y_pos) {
+    // do stuff
+}
+
 // Update game objects
 var update = function (modifier) {
-    // Player Movement
+    var player_x = hero.x
+    var player_y = hero.y
+
+    // Move Player
     if (38 in keysDown) { // Player holding up
         hero.y = Math.max(hero.y - hero.speed * modifier, 0);
     }
@@ -80,7 +88,23 @@ var update = function (modifier) {
         hero.x = Math.min(hero.x + hero.speed * modifier, canvas.width - 32);
     }
 
-    // Are they touching?
+    // Move Monster
+    var direction = 'left'
+    switch(direction) {
+        case 'up':
+            monster.y = Math.max(monster.y - monster.speed * modifier, 0);
+            break;
+        case 'down':
+            monster.y = Math.min(monster.y + monster.speed * modifier, canvas.height - 32);
+            break;
+        case 'left':
+            monster.x = Math.max(monster.x - monster.speed * modifier, 0);
+            break;
+        case 'right':
+            monster.x = Math.min(monster.x + monster.speed * modifier, canvas.width - 32);
+    }
+
+    // Determine if game is over
     if (
         hero.x <= (monster.x + 32)
         && monster.x <= (hero.x + 32)
@@ -111,7 +135,7 @@ var render = function () {
     ctx.font = "24px Helvetica";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.fillText("Goblins caught: " + monstersCaught, 32, 32);
+    ctx.fillText("Times caught: " + monstersCaught, 32, 32);
 };
 
 // The main game loop
