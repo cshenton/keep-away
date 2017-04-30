@@ -8,10 +8,10 @@ from sanic import response
 import zmq
 
 # Grab config from environment vars
-web_port = os.getenv('WEBSERVER_PORT', 1337)
-pub_port = os.getenv('PUB_PORT', 5555)
+web_port = int(os.getenv('WEBSERVER_PORT', 1337))
+pub_port = int(os.getenv('PUB_PORT', 5555))
 inf_host = os.getenv('INFERER_HOST')
-inf_port = os.getenv('INFERER_PORT')
+inf_port = int(os.getenv('INFERER_PORT'))
 
 app = Sanic(__name__)
 

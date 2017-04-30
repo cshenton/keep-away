@@ -5,22 +5,26 @@ services:
   game:
     build: game/
     environment:
-      - WEBSERVER_PORT=5555
+      - WEBSERVER_PORT=1337
       - PUB_PORT=5555
       - INFERER_HOST=inferer
       - INFERER_PORT=1337
+      - PYTHONASYNCIODEBUG=1
     links:
-      - normaliser
+      - inferer
+    ports:
+      - "1337:1337"
 
   learner:
     build: learner/
     environment:
-      - GAME_HOST=game
-      - GAME_PORT=5555
+      - SUB_HOST=game
+      - SUB_PORT=5555
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     links:
-      - simulator
+      - game
+      - redis
 
   redis:
     image: redis
@@ -31,3 +35,5 @@ services:
       - WEBSERVER_PORT=5555
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+    links:
+      - redis
