@@ -65,14 +65,48 @@ var reset = function () {
 };
 
 // Query the backend action API
-var action = function(x_pos, y_pos) {
-    // do stuff
+var monster_action = function(hero_x, hero_y, mon_x, mon_y, caught) {
+    // construct an HTTP request
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://localhost:1337/api/action', false);
+    xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+    data = {
+        'hero': {
+            'x': hero_x,
+            'y': hero_y,
+        },
+        'monster': {
+            'x': mon_x,
+            'y': mon_y,
+        },
+        'caught': caught
+    };
+    // send the collected data as JSON and return the direction
+    xhr.send(JSON.stringify(data));
+    var jsonResponse = JSON.parse(xhr.responseText);
+    return jsonResponse.direction;
 }
 
 // Update game objects
 var update = function (modifier) {
-    var player_x = hero.x
-    var player_y = hero.y
+    // Determine monster action
+    var direction = monster_action(hero.x, hero.y, monster.x, monster.y, false);
+    // var direction = 'up'
+
+    // Move Monster
+    switch(direction) {
+        case 'up':
+            monster.y = Math.max(monster.y - monster.speed * modifier, 0);
+            break;
+        case 'down':
+            monster.y = Math.min(monster.y + monster.speed * modifier, canvas.height - 32);
+            break;
+        case 'left':
+            monster.x = Math.max(monster.x - monster.speed * modifier, 0);
+            break;
+        case 'right':
+            monster.x = Math.min(monster.x + monster.speed * modifier, canvas.width - 32);
+    }
 
     // Move Player
     if (38 in keysDown) { // Player holding up
@@ -86,22 +120,6 @@ var update = function (modifier) {
     }
     else if (39 in keysDown) { // Player holding right
         hero.x = Math.min(hero.x + hero.speed * modifier, canvas.width - 32);
-    }
-
-    // Move Monster
-    var direction = 'left'
-    switch(direction) {
-        case 'up':
-            monster.y = Math.max(monster.y - monster.speed * modifier, 0);
-            break;
-        case 'down':
-            monster.y = Math.min(monster.y + monster.speed * modifier, canvas.height - 32);
-            break;
-        case 'left':
-            monster.x = Math.max(monster.x - monster.speed * modifier, 0);
-            break;
-        case 'right':
-            monster.x = Math.min(monster.x + monster.speed * modifier, canvas.width - 32);
     }
 
     // Determine if game is over
