@@ -3,11 +3,21 @@ This is a simple web app that plays a game of keep away against the user. Game s
 """
 from random import randint
 from sanic import Sanic
+from sanic import response
 
 app = Sanic(__name__)
 
-# Serves files from the static folder to the URL /static
-app.static('/', './static')
+# Host static files
+app.static('/static', '/static')
+
+# Route index to root
+@app.route("/")
+async def root(request):
+    """
+    Opens index.html and serves it to the user
+    """
+    with open('index.html') as f:
+        return response.html(f.read())
 
 # Add a single POST endpoint for the API
 @app.post('/api/action')
@@ -18,10 +28,10 @@ async def action_handler(request):
     body = request.json
     # Do some stuff
 
-    response = {
+    data = {
         'direction': random_direction()
     }
-    return json(response)
+    return response.json(data)
 
 def random_direction():
     """
@@ -35,19 +45,21 @@ def random_direction():
     }
     return directions[randint(1,4)]
 
-
 REQUEST = {
     'hero': {
         'x': int,
         'y': int,
-    }
+    },
     'monster': {
         'x': int,
         'y': int,
-    }
+    },
     'caught': bool
 }
 
 RESPONSE = {
     'direction': str # one of 'up' 'down' 'left' 'right'
 }
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=1337, workers=4)
