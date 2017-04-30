@@ -32,3 +32,7 @@ The high query frequency of this game allows for a neat demonstration of how thi
 ## Throughput
 
 Fill this out later showing the data throughput of parts of the system.
+
+## Credits
+
+Credit to https://github.com/lostdecade/simple_canvas_game on which the game portion of this repo is based.
