@@ -8,14 +8,15 @@ This game pits you against an AI controlled dot on a grid matrix. Your goal is t
 This application has three components
 
 - Webserver + frontend: a simple javascript game
-- Trainer: receives game data and updates Q-reinforcement algo
+- Trainer: receives game data and updates Q-reinforcement algorithm
 - Inferer: exposes api for webserver to consume
 
 ## Comms
 
 Data is moved about as so
 
-- The webserver exposes a pubsub feed of game state using ZeroMQ, which is published at a well known port
+- The js client sends its state to the backend webserver on each loop. The webserver responds with the next action. This is combined with user input to produce the new game state.
+- The webserver exposes a pubsub feed of game input state, action, and output state using ZeroMQ, which is published at a well known port.
 - The trainer consumes from that feed, and uses the data to update a reinforcement learning model, which is persisted to Redis
 - The inferer reads the model from Redis, and exposes a webserver which allows for querying of optimal actions given game state.
 - The webserver queries the inferer API for information about how to act

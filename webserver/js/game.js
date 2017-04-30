@@ -66,6 +66,7 @@ var reset = function () {
 
 // Update game objects
 var update = function (modifier) {
+    // Player Movement
     if (38 in keysDown) { // Player holding up
         hero.y = Math.max(hero.y - hero.speed * modifier, 0);
     }
