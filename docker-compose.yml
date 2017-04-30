@@ -5,21 +5,29 @@ services:
   game:
     build: game/
     environment:
-      - INPUT_HOST=normaliser
-      - INPUT_PORT=5555
+      - WEBSERVER_PORT=5555
+      - PUB_PORT=5555
+      - INFERER_HOST=inferer
+      - INFERER_PORT=1337
     links:
       - normaliser
 
   learner:
     build: learner/
     environment:
-      - INPUT_HOST=simulator
-      - INPUT_PORT=5555
-      - OUTPUT_PORT=5555
+      - GAME_HOST=game
+      - GAME_PORT=5555
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     links:
       - simulator
+
+  redis:
+    image: redis
 
   inferer:
     build: inferer/
     environment:
-      - OUTPUT_PORT=5555
+      - WEBSERVER_PORT=5555
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
