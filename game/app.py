@@ -45,21 +45,21 @@ def random_direction():
     }
     return directions[randint(1,4)]
 
-REQUEST = {
-    'hero': {
-        'x': int,
-        'y': int,
-    },
-    'monster': {
-        'x': int,
-        'y': int,
-    },
-    'caught': bool
-}
+# REQUEST = {
+#     'hero': {
+#         'x': int,
+#         'y': int,
+#     },
+#     'monster': {
+#         'x': int,
+#         'y': int,
+#     },
+#     'caught': bool
+# }
 
-RESPONSE = {
-    'direction': str # one of 'up' 'down' 'left' 'right'
-}
+# RESPONSE = {
+#     'direction': str # one of 'up' 'down' 'left' 'right'
+# }
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=1337, workers=4)
