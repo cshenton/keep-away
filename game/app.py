@@ -17,7 +17,7 @@ app = Sanic(__name__)
 
 # Set up and bind PUB socket
 @app.listener('before_server_start')
-def zmq_socket(app):
+def zmq_socket(app, loop):
     """
     Given a sanic app object, initialises a ZMQ context object, creates
     a PUB socket, binds it to port 5555, and attaches it to the app
@@ -85,4 +85,4 @@ async def action_handler(request):
 # }
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=web_port, workers=4)
+    app.run(host='0.0.0.0', port=web_port, workers=1)
